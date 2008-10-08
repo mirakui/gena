@@ -3,7 +3,7 @@ require 'gena/mail.rb'
 
 module Gena
   class Gmail < Mail
-    def self.send(subject, body)
+    def self.send(param)
       config = Pit.get('gena_gmail', :require => {
         'host' => 'smtp.gmail.com',
         'port' => '587',
