@@ -22,6 +22,10 @@ module Gena
       File.open(@path, 'w') {|f| f.write text}
       text
     end
+
+    def delete
+      File.delete @path
+    end
   end
 end
 __END__

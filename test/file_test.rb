@@ -12,6 +12,7 @@ class GenaFileTest < Test::Unit::TestCase
     read = f.read
     assert !(read.nil?)
     assert read==text
-    File.delete f.path
+    f.delete
+    assert !File.exist?(f.path)
   end
 end
