@@ -7,7 +7,7 @@ module Gena
       @base = base ? (
         File.file?(base) ? File.dirname(base) : base
       ) : nil
-      @path = @base ? path : File.join(@base, path)
+      @path = @base ? File.join(@base, path) : path
     end
 
     def read
@@ -25,6 +25,10 @@ module Gena
 
     def delete
       File.delete @path
+    end
+
+    def exist?
+      File.exist? @path
     end
   end
 end
