@@ -1,5 +1,5 @@
 module Gena
-  class FileUtil
+  class FileDB
     attr_reader :path
 
     def initialize(path, param={})
