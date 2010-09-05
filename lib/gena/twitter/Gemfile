@@ -1,0 +1,2 @@
+gem 'pit'
+gem 'twitter_oauth'
