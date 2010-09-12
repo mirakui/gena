@@ -33,6 +33,10 @@ module Gena
     end
 
     def update(msg, opts={})
+      if RUBY_VERSION >= "1.9.0"
+        msg.force_encoding("utf-8")
+      end
+
       unless @readonly
         twitter.update msg, opts
         logger.info "posted to twitter: #{msg} (#{opts.inspect})"
@@ -46,16 +50,8 @@ module Gena
       update "@#{target_status['user']['screen_name']} #{msg}", :in_reply_to_status_id => target_status['id']
     end
 
-    def followers_ids(opt={})
-      send_twitter :followers_ids, opt
-    end
-
-    def mentions(opt={})
-      send_twitter :mentions, opt
-    end
-
-    def friends_timeline(opt={})
-      send_twitter :friends_timeline, opt
+    def message(user, text)
+      send_twitter :message, user, text.force_encoding('utf-8')
     end
 
     private
@@ -73,11 +69,21 @@ module Gena
 
     def send_twitter(method_name, *opts)
       res = twitter.send(method_name.to_s, *opts)
-      if res.is_a?(Hash) && res.has_key('error') 
-        raise TwitterBotError.new(res)
+      logger.debug "send_twitter: #{method_name} (opts=#{opts.inspect})"
+      if res.is_a?(Hash) && res.has_key?('error') 
+        raise TwitterError.new(res)
       end
       res
     end
+
+    def self.delegate_twitter(*syms)
+      syms.each do |sym|
+        define_method(sym) do |*opt|
+          send_twitter sym, *opt
+        end
+      end
+    end
+    delegate_twitter :followers_ids, :mentions, :friends_timeline, :message, :user_timeline, :show
   end
 end
 
